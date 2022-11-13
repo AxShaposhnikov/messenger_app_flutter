@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_app/widgets/widgets.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,6 +12,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _loginController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  String email = "";
+  String password = "";
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -36,55 +40,37 @@ class _LoginPageState extends State<LoginPage> {
                         height: 40,
                       ),
                       TextFormField(
-                        // указываем для поля границу,
-                        // иконку и подсказку (hint)
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1.5),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40))),
-                            prefixIcon: Icon(Icons.mail),
-                            hintText: "Mail"),
-                        // не забываем указать TextEditingController
-                        controller: _loginController,
-                        // параметр validator - функция которая,
-                        // должна возвращать null при успешной проверки
-                        // или строку при неудачной
-                        validator: (value) {
-                          // здесь мы для наглядности добавили 2 проверки
-                          if (value == null || value.isEmpty) {
-                            return "User mail is empty";
-                          }
-                          if (value.length < 3) {
-                            return "Заголовок должен быть не короче 3 символов";
-                          }
-                          return null;
-                        },
-                      ),
+                          decoration: textInputDecoration.copyWith(
+                              prefixIcon: const Icon(Icons.mail),
+                              hintText: "Mail"),
+                          controller: _loginController,
+                          validator: (value) {
+                            return RegExp(
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                    .hasMatch(value!)
+                                ? null
+                                : 'Please enter valid email';
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              email = value;
+                            });
+                          }),
                       const SizedBox(height: 20),
                       TextFormField(
-                        // указываем для поля границу,
-                        // иконку и подсказку (hint)
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40))),
-                            prefixIcon: Icon(Icons.lock),
+                        decoration: textInputDecoration.copyWith(
+                            prefixIcon: const Icon(Icons.lock),
                             hintText: "Password"),
-                        // не забываем указать TextEditingController
                         controller: _passwordController,
-                        // параметр validator - функция которая,
-                        // должна возвращать null при успешной проверки
-                        // или строку при неудачной
                         validator: (value) {
-                          // здесь мы для наглядности добавили 2 проверки
-                          if (value == null || value.isEmpty) {
-                            return "Заголовок пустой";
-                          }
-                          if (value.length < 3) {
-                            return "Заголовок должен быть не короче 3 символов";
-                          }
-                          return null;
+                          return value!.length < 6
+                              ? null
+                              : "Password must be at least 6 characters";
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            password = value;
+                          });
                         },
                       ),
                       const SizedBox(
