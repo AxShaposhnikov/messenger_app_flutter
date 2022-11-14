@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_app/pages/auth/register_page.dart';
 import 'package:messenger_app/widgets/widgets.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,13 +16,13 @@ class _LoginPageState extends State<LoginPage> {
 
   String email = "";
   String password = "";
-  bool _isLoading = false;
+  bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         body: SingleChildScrollView(
           child: Padding(
               padding:
@@ -83,11 +85,32 @@ class _LoginPageState extends State<LoginPage> {
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
-                            onPressed: () {},
+                            onPressed: () {
+                              login();
+                            },
                             child: const Text('Sign In')),
-                      )
+                      ),
+                      const SizedBox(height: 10),
+                      Text.rich(TextSpan(
+                          text: "Don't have an account?",
+                          style: const TextStyle(
+                              color: Colors.black, fontSize: 14),
+                          children: [
+                            TextSpan(
+                                text: "Register now!",
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    nextScreen(context, const RegisterPage());
+                                  })
+                          ]))
                     ],
                   ))),
         ));
   }
+
+  login() {}
 }
